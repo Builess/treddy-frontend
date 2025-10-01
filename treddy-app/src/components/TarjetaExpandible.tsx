@@ -1,6 +1,7 @@
 'use client'
 import Image from 'next/image'
-import { useState, useRef, useEffect } from 'react'
+import { useState } from 'react'
+import ARScene from '@/components/VistaAR'  // 👈 importa tu componente AR reutilizable
 
 type Figura = {
   producto_id: number
@@ -12,38 +13,31 @@ type Figura = {
 }
 
 export default function TarjetaExpandible({ figura, onClose }: { figura: Figura, onClose: () => void }) {
-  const [mostrarAR, setmostrarAR] = useState(false)
-  const videoRef = useRef<HTMLVideoElement | null>(null)
-
-  useEffect(() => {
-    if (mostrarAR && videoRef.current) {
-      navigator.mediaDevices.getUserMedia({ video: true })
-        .then((stream) => {
-          if (videoRef.current) {
-            videoRef.current.srcObject = stream
-          }
-        })
-        .catch((err) => console.error("Error accediendo a la cámara:", err))
-    }
-  }, [mostrarAR])
+  const [mostrarAR, setMostrarAR] = useState(false)
 
   if (!figura) return null
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
       <div className="bg-[#0F173A] p-6 rounded-xl max-w-md w-full text-center relative text-white">
+        
+        {/* Botón AR */}
         <button
-          onClick={() => setmostrarAR(!mostrarAR)}
+          onClick={() => setMostrarAR(true)}
           className="absolute top-3 left-3 bg-gray-600 text-white font-semibold py-2 px-5 rounded-lg hover:bg-[#00E6F6] hover:text-black transition"
         >
           AR
         </button>
+
+        {/* Botón cerrar tarjeta */}
         <button
           onClick={onClose}
           className="absolute top-3 right-3 text-white py-2 px-4 rounded-lg hover:text-[#00E6F6]"
         >
           X
         </button>
+
+        {/* Contenido */}
         <p className="text-[#00E6F6] font-bold mt-1">Disponible: {figura.stock}</p>
         <Image
           src={figura.imagenUrl || "/placeholder.png"}
@@ -68,11 +62,12 @@ export default function TarjetaExpandible({ figura, onClose }: { figura: Figura,
         </div>
       </div>
 
-      {mostrarAR && (
-        <div className="w-1/2 bg-black rounded-xl flex items-center justify-center">
-          <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover rounded-xl" />
-        </div>
-      )}
+      {/* Renderiza el ARScene SOLO cuando mostrarAR sea true */}
+      <ARScene
+        active={mostrarAR}
+        onClose={() => setMostrarAR(false)}
+        modelUrl="HORNET.glb"   // aquí puedes cambiarlo según la figura
+      />
     </div>
   )
 }
