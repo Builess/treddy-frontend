@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react"
 import * as THREE from "three"
 import { ARButton } from "three/examples/jsm/webxr/ARButton.js"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
-
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
 export default function ARViewer() {
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -30,6 +30,17 @@ export default function ARViewer() {
     // Botón AR (fuera del contenedor)
     const arButton = ARButton.createButton(renderer, { requiredFeatures: ["local"] })
     document.body.appendChild(arButton)
+
+    // Controles de órbita para PC
+    const controls = new OrbitControls(camera, renderer.domElement)
+    controls.enableDamping = true
+    controls.dampingFactor = 0.05
+    controls.minDistance = 1
+    controls.maxDistance = 10
+    controls.target.set(0, 0, -2)
+
+    // Posicionar cámara inicialmente
+    camera.position.set(0, 0, 0)
 
     // Luz
     scene.add(new THREE.AmbientLight(0xffffff, 1.2))
