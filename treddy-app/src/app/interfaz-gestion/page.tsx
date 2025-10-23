@@ -1,7 +1,6 @@
 'use client';
 
-import { useProductos, Producto } from "@/context/ProductosContext";
-import Image from "next/image";
+import { useProductos } from "@/context/ProductosContext";
 import Nav from "@/pages/nav";
 import Footer from "@/pages/footer";
 
