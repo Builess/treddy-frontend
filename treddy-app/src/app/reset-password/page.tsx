@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import AnimatedBackground from "@/components/animatedBackground";
 
-export default function ResetPasswordPage() {
+function ResetPasswordContent() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
@@ -34,7 +34,7 @@ export default function ResetPasswordPage() {
         alert(data.message || "Error al restablecer la contraseña");
       } else {
         alert("Contraseña actualizada con éxito, ahora puedes iniciar sesión");
-        router.push("auth/login");
+        router.push("/auth/login");
       }
     } catch (error) {
       console.error("Error en reset-password:", error);
@@ -75,5 +75,13 @@ export default function ResetPasswordPage() {
         </form>
       </div>
     </div>
+  );
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={<div className="text-center mt-10 text-cyan-400">Cargando...</div>}>
+      <ResetPasswordContent />
+    </Suspense>
   );
 }
